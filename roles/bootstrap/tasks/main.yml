@@ -1,0 +1,40 @@
+---
+- ansible.builtin.assert:
+    that:
+    - ansible_facts['os_family'] == base_os_supported
+    fail_msg: >-
+      El rol base está diseñado para {{ base_os_supported }}, mientras que se trata de aplicar en {{ ansible_facts['os_family'] }}
+    success_msg: "Sistema Operativo compatible"
+
+- name: Instalar sudo
+  ansible.builtin.package:
+    name: sudo
+    state: present
+
+- name: Crear usuario de administración ansible
+  ansible.builtin.user:
+    name: "{{ user_account }}"
+    shell: /bin/bash
+    home: /home/ansible
+    create_home: yes
+    state: present
+
+- name: Añadir usuario a grupo administrativo
+  ansible.builtin.user:
+    name: "{{ user_account }}"
+    groups: "{{ sudo_group }}"
+    append: true
+  when: manage_sudo_group | bool
+
+- name: Privilegios sin necesidad de contraseña
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/{{ user_account }}
+    content: "{{ user_account }} ALL=(ALL) NOPASSWD: ALL"  
+    mode: '0440'
+    owner: root
+    group: root
+    validate: "/usr/sbin/visudo -cf %s"
+  when: sudo_nopasswd | bool
+
+- ansible.builtin.import_tasks: ssh.yml
+  when: ssh_manage_key | bool

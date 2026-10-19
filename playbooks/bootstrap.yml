@@ -1,0 +1,6 @@
+---
+- name: Preparar el acceso administrativo inicial
+  hosts: all
+  become: true
+  roles:
+  - bootstrap

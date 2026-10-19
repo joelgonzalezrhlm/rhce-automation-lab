@@ -1,0 +1,10 @@
+---
+user_account: ansible       # Usuario que usará ansible para administrar el nodo
+
+ssh_manage_key: true        # True para agregar ssh por clave
+ssh_public_key: ""          # Ruta clave publica
+sudo_nopasswd: true         # True para activar sudo sin solicitar contraseña
+manage_sudo_group: true     # True para añadir a un grupo sudo
+sudo_group: wheel           # Indicar grupo a añadir
+
+base_os_supported: "RedHat" # Sistema soportado

@@ -5,3 +5,4 @@ base_packages:
   - wget
   - bash-completion
 
+ssh_public_key: "/home/ansible/.ssh/id_ed25519.pub"

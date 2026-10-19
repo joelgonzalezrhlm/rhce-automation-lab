@@ -1,0 +1,6 @@
+---
+- name: Instalar clave pública
+  ansible.builtin.authorized_key:
+    user: "{{ user_account }}"
+    state: present
+    key: "{{ lookup('file', ssh_public_key) }}"
