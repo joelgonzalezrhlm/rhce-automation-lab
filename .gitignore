@@ -1,0 +1,8 @@
+# Archivos temporales de Ansible y Python
+*.retry
+*.pyc
+.cache/
+.ansible/
+
+# Variables de entorno o contraseñas sensibles (opcional, si usas ficheros sueltos)
+*.vault

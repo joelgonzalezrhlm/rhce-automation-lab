@@ -1,0 +1,15 @@
+[infrastructure]
+infra01 ansible_host=192.168.213.101
+
+[webservers]
+web01 ansible_host=192.168.213.102
+web02 ansible_host=192.168.213.103
+
+[applications]
+app01 ansible_host=192.168.213.105
+
+[backup]
+backup01 ansible_host=192.168.213.106
+
+[repos]
+repos01 ansible_host=192.168.213.107

@@ -1,0 +1,15 @@
+---
+- name: Añadir usuario ansible y permisos para administrarlos
+  hosts: all
+  vars_prompt:
+  - name: password
+    prompt: Introduce la contraseña para el usuario ansible
+    private: yes
+    confirm: yes
+  tasks:
+  - ansible.builtin.user:
+      name: ansible
+      groups: wheel
+      append: true
+      password: "{{ password | password_hash('sha256') }}"
+      state: present

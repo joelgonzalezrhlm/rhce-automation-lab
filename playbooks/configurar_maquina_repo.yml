@@ -1,0 +1,77 @@
+---
+- name: Configurar repositorio y el host
+  hosts: all
+  vars_prompt:
+  - name: nombre_host_repo
+    prompt: "Introduce el nombre a asignar para el host"
+    private: no
+    default: "repos01.example.com"
+  - name: ruta_iso
+    prompt: "Introduce la ruta de la iso a copiar (Ej: /dev/sr0)"
+    private: no
+    default: "/dev/sr0"
+  
+  tasks:
+
+  - name: Set a hostname
+    ansible.builtin.hostname:
+      name: "{{ nombre_host_repo }}"
+
+  - name: Crear copia de la ISO en /reposerver
+    ansible.builtin.command:
+      cmd: dd if={{ ruta_iso }} of=/rhel10.iso bs=1M
+
+  - name: Montar DVD de instalación para los repositorios
+    ansible.posix.mount:
+      path: /reposerver
+      src: /rhel10.iso
+      fstype: iso9660
+      opts: ro,noauto
+      state: mounted
+
+  - name: Configurar repositorios locales desde la ISO (BaseOS y AppStream)
+    ansible.builtin.yum_repository:
+      name: "{{ item.name }}"
+      description: "{{ item.description }}"
+      baseurl: "file:///reposerver/{{ item.path }}"
+      enabled: yes
+      gpgcheck: no
+    loop:
+      - name: rhel10_baseos
+        description: "RHEL 10 BaseOS Local"
+        path: "BaseOS"
+
+      - name: rhel10_appstream
+        description: "RHEL 10 AppStream Local"
+        path: "AppStream"
+
+  - ansible.builtin.dnf:
+      name: httpd
+      state: present
+  - ansible.builtin.service:
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: Enlace simbólico a /var/www/html
+    ansible.builtin.file:
+      src: /reposerver
+      dest: /var/www/html/reposerver
+      owner: root
+      group: root
+      state: link
+    notify: cambio repo
+
+  - name: Permitir tráfico HTTP desde el rango 192.168.213.0/24
+    ansible.builtin.firewalld:
+      zone: public  # la zona que estés utilizando (ej: internal, dmz, etc.)
+      rich_rule: 'rule family="ipv4" source address="192.168.213.0/24" service name="http" accept'
+      permanent: true
+      immediate: true
+      state: enabled
+
+  handlers:
+  - name: cambio repo
+    ansible.builtin.service:
+      name: httpd
+      state: restarted
