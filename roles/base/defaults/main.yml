@@ -1,0 +1,15 @@
+---
+# defaults file for base
+base_packages:
+- vim-enhanced
+- curl
+- wget
+- bash-completion
+
+base_hostname: "{{ inventory_hostname }}"
+
+base_os_supported: "RedHat"
+
+base_time_sync_package: chrony
+base_time_sync_service: chronyd
+

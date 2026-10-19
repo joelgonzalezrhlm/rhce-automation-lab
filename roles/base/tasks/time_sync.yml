@@ -1,0 +1,23 @@
+---
+- name: Instalar el paquete de sincronización horaria
+  ansible.builtin.dnf:
+    name: "{{ base_time_sync_package }}"
+    state: present
+
+- name: Habilitar y arrancar el servicio de sincronización horaria
+  ansible.builtin.service:
+    name: "{{ base_time_sync_service }}"
+    enabled: yes
+    state: started
+
+- name: Consultar el estado de sincronización de chrony
+  ansible.builtin.command:
+    cmd: chronyc sources 
+  register: base_chrony_tracking
+  changed_when: false
+  failed_when: false
+
+- name: Mostrar el estado de sincronización horaria
+  ansible.builtin.debug:
+    msg: "{{ base_chrony_tracking.stdout_lines }}"
+

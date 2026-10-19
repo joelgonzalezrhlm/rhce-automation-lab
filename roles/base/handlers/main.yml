@@ -1,0 +1,6 @@
+---
+- name: Reiniciar servicio de sincronización horaria
+  ansible.builtin.service:
+    name: "{{ base_time_sync_service }}"
+    state: restarted
+

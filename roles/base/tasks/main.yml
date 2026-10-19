@@ -1,0 +1,17 @@
+---
+- ansible.builtin.assert:
+    that:
+    - ansible_facts['os_family'] == base_os_supported
+    fail_msg: >-
+      El rol base está diseñado para {{ base_os_supported }}, mientras que se trata de aplicar en {{ ansible_facts['os_family'] }}
+    success_msg: "Sistema Operativo compatible"
+
+- name: Configurar hostname
+  ansible.builtin.import_tasks: hostname.yml
+
+- name: Instalación de paquetes comunes
+  ansible.builtin.import_tasks: packages.yml
+
+- name: Configurar sincronización horaria
+  ansible.builtin.import_tasks: time_sync.yml
+

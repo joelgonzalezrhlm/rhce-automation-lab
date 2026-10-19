@@ -1,0 +1,20 @@
+---
+- name: Configurar repositorios de la máquina
+  hosts: all
+  tasks:
+  - name: Configurar repositorios locales desde la ISO (BaseOS y AppStream)
+    ansible.builtin.yum_repository:
+      name: "{{ item.name }}"
+      description: "{{ item.description }}"
+      baseurl: "http://192.168.213.107/reposerver/{{ item.path }}"
+      enabled: yes
+      gpgcheck: no
+    loop:
+      - name: rhel10_baseos
+        description: "RHEL 10 BaseOS Local"
+        path: "BaseOS"
+
+      - name: rhel10_appstream
+        description: "RHEL 10 AppStream Local"
+        path: "AppStream"
+

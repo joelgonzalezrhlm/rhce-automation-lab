@@ -1,0 +1,6 @@
+---
+- name: Utilizar rol base para implementacion base
+  hosts: all
+  become: yes
+  roles:
+  - base

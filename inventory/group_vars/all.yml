@@ -1,0 +1,7 @@
+---
+base_packages:
+  - vim-enhanced
+  - curl
+  - wget
+  - bash-completion
+

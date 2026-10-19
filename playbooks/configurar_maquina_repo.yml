@@ -26,7 +26,6 @@
       path: /reposerver
       src: /rhel10.iso
       fstype: iso9660
-      opts: ro,noauto
       state: mounted
 
   - name: Configurar repositorios locales desde la ISO (BaseOS y AppStream)
