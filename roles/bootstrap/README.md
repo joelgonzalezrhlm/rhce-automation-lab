@@ -1,38 +1,40 @@
-Role Name
-=========
+# Rol bootstrap
 
-A brief description of the role goes here.
+## Objetivo
 
-Requirements
-------------
+Preparar el acceso administrativo inicial a los servidores Linux de la infraestructura, creando el usuario de automatización, configurando sus privilegios y gestionando su clave pública SSH.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Responsabilidades
 
-Role Variables
---------------
+- Comprobar que el sistema operativo pertenece a la familia RedHat.
+- Instalar el paquete sudo.
+- Crear el usuario de administración de Ansible.
+- Añadir el usuario al grupo administrativo configurado.
+- Configurar los privilegios sudo con o sin contraseña.
+- Instalar la clave pública SSH cuando esté habilitado.
+- Validar la configuración de sudo antes de aplicarla.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Variables principales
 
-Dependencies
-------------
+| Variable | Valor predeterminado | Descripción |
+|---|---|---|
+| user_account | ansible | Usuario de administración |
+| ssh_manage_key | true | Habilita la gestión de claves SSH |
+| ssh_public_key | "" | Ruta de la clave pública en el controlador |
+| sudo_nopasswd | true | Permite sudo sin contraseña |
+| manage_sudo_group | true | Habilita la gestión del grupo administrativo |
+| sudo_group | wheel | Grupo administrativo |
+| base_os_supported | RedHat | Familia de sistema operativo admitida |
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Requisitos
 
-Example Playbook
-----------------
+- Ansible instalado en el controlador.
+- Acceso SSH inicial a los nodos.
+- Privilegios suficientes para administrar el sistema.
+- Sistemas de la familia RedHat compatibles con el rol.
+- Archivo de clave pública disponible en el controlador si se habilita su instalación.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Ejecución
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+ansible-playbook -i inventory/hosts.yml playbooks/bootstrap.yml

@@ -3,7 +3,7 @@
     that:
     - ansible_facts['os_family'] == base_os_supported
     fail_msg: >-
-      El rol base está diseñado para {{ base_os_supported }}, mientras que se trata de aplicar en {{ ansible_facts['os_family'] }}
+      El rol bootstrap está diseñado para {{ base_os_supported }}, mientras que se trata de aplicar en {{ ansible_facts['os_family'] }}
     success_msg: "Sistema Operativo compatible"
 
 - name: Instalar sudo
@@ -35,6 +35,15 @@
     group: root
     validate: "/usr/sbin/visudo -cf %s"
   when: sudo_nopasswd | bool
+
+- name: Validar que la clave pública SSH esté definida
+  ansible.builtin.assert:
+    that:
+      - ssh_public_key | trim | length > 0
+    fail_msg: >-
+      Debes definir ssh_public_key con la ruta del archivo
+      de clave pública en el controlador Ansible.
+  when: ssh_manage_key | bool
 
 - ansible.builtin.import_tasks: ssh.yml
   when: ssh_manage_key | bool
